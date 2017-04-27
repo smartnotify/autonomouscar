@@ -1,0 +1,71 @@
+<!doctype html> 
+<html>  
+  <head>  
+    <title>SmartNotify IoT Demo</title>  
+      <link rel="stylesheet" type="text/css" href="http://www.smartnotify.us/mainsite/css/compiled/theme.css">
+      <link rel="stylesheet" type="text/css" href="http://www.smartnotify.us/mainsite/css/compiled/font-awesome.css">
+      <link rel="stylesheet" type="text/css" href="http://www.smartnotify.us/mainsite/css/SmartNotifySpecific.css">
+    <style>  
+      * { margin: 0; padding: 0; box-sizing: border-box; }  
+      body {  }  
+      form { background: #F7F4F4;
+                padding: 10px;
+                margin: 10px;
+                width: 80%; }  
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }  
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }   
+      #messages { list-style-type: none; margin: 0; padding: 0; }  
+      #messages li { padding: 5px 10px; }  
+      #messages li:nth-child(odd) { background: #eee; }  
+      .navbar-header{ background: #fff; } 
+      .navbar.normal {background: #fff; } 
+    </style>  
+  </head>  
+  <body>  
+     <header class="navbar navbar-inverse normal" role="banner">
+				<div class="container">
+					<div class="navbar-header">
+                        <a href="http://www.smartnotify.us/index.aspx" class="navbar-brand">
+                        <img src="/SmartnotifyLogo.svg" width="400px" alt="SmartNotify Logo" />
+						 </a>
+					</div>
+                        <h1>IoT Demo</h1>
+				</div>
+			</header>
+ 
+Which way to go?
+<input type=text id="directionInput" oninput="typeCarDirections(this.value)"><br>
+
+      Which heading?
+<input type=text id="headingInput" ><button onclick="headingCommand()">Set Heading</button><br>
+
+      <ul id="messages"></ul>  
+
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script> 
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script> 
+    
+<script> 
+  var socket = io(); 
+    
+    function headingCommand (){
+        var degrees = $("#headingInput").val();
+        socket.emit("HeadingRequest", degrees); 
+        console.log ("Move to heading: " + degrees);
+    }
+    
+    function typeCarDirections(direction) {
+        console.log ("Typed: " + direction);
+        socket.emit("SmartRequest", direction); 
+         
+        document.getElementById("directionInput").value = "";
+        return false;
+    }
+
+    
+  socket.on("message", function(carstate){ 
+    $("#messages").append($("<li>").text("Car is: " + carstate)); 
+  }); 
+</script> 
+
+  </body>  
+</html>
